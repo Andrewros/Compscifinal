@@ -9,9 +9,17 @@ import sqlite3
 from PIL import Image
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
-
+from dotenv import load_dotenv
+from functools import wraps
+load_dotenv()
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/login")
+        return f(*args, **kwargs)
+    return decorated_function
 training=True
-from helpers import login_required
 app=Flask(__name__)
 CLASSES = ['Andrew', 'Brad', 'Matthew']
 preprocessedsteps=transforms.Compose([
@@ -187,9 +195,7 @@ def train():
                     optimizer.step()
                     if epoch==epochs-1 and loss.item()<0.5:
                         losses.append(loss.item())
-                    print(loss.item())
-                if epoch%5==0:
-                    print(f"Epoch: {epoch} loss:{loss.item()}")
+                print(f"Epoch: {epoch} loss:{loss.item()}")
 
             if len(losses)>4 and loss.item()<0.8:
                 break
@@ -229,4 +235,4 @@ def logout():
   return redirect("/")
 
 if __name__=="__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(port=os.getenv("PORT") or 3000, debug=True)
