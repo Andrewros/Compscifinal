@@ -9,9 +9,7 @@ import sqlite3
 from PIL import Image
 from werkzeug.security import check_password_hash, generate_password_hash
 import os
-from dotenv import load_dotenv
 from functools import wraps
-load_dotenv()
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
