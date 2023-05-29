@@ -235,4 +235,4 @@ def logout():
   return redirect("/")
 
 if __name__=="__main__":
-    app.run(port=os.getenv("PORT") or 3000, debug=True)
+    app.run(port=3000)
